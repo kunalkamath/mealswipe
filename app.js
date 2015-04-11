@@ -57,6 +57,7 @@ app.get('/:active', function(req, res) {
   res.send(obj);
   db.close();
 });
+});
   
 
 app.post(":/register", function(req, resp){
