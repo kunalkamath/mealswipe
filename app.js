@@ -2,7 +2,6 @@
 var express = require('express'),
     MongoClient = require('mongodb').MongoClient,
     Server = require('mongodb').Server,
-    CollectionDriver = require('./collectionDriver').CollectionDriver;
 
 var app = express();
 var mongoHost = 'localhost';
