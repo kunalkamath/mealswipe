@@ -60,15 +60,19 @@ app.get('/:active', function(req, res) {
 });
   
 
-app.post("/:register", function(req, resp){
+app.post("/:register", function(req, res){
   var params;
   if(req.params == null){
+    console.log("done registering");
     params = {
-
+      "name" : "Hari D",
+      "phone" : "12345678",
+      "email" : "abc1234@columbia.edu"
     } 
   }
-  else
+  else{
     params = req.params;
+  }
   console.log("in register");
   MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
     if(err) throw err;
@@ -92,9 +96,18 @@ app.post("/:register", function(req, resp){
         "active" : 0,
         "location" : "",
         "school" : "Columbia"
+      }, function(err, result){
+          console.log(result);
+          console.log(err);
+        /*if (err){
+          console.log('ERROR');
+          console.log(error.message);
+          return;
+        }*/
       });
       db.close();
   });
+  res.send("RDTFCGVBHJNK");
   console.log("done registering");
 });
 
