@@ -100,6 +100,7 @@ app.post(":/register", function(req, resp){
 
 });
 
+/*
 app.get('/:setActive', function(req,res){
   //Start connection
   var MongoClient = require('mongodb').MongoClient,
@@ -119,8 +120,9 @@ app.get('/:setActive', function(req,res){
   db.close();
 });
 });
+*/
 
-
+/*
 app.get('/:setInactive', function(req,res){
   //Start connection
   var MongoClient = require('mongodb').MongoClient,
@@ -139,8 +141,9 @@ app.get('/:setInactive', function(req,res){
   //Nothing to send back to user
   db.close();
 });
-});
+});*/
 
+/*
 app.get('/:verify',function(req,res){
   //Start connection
   var MongoClient = require('mongodb').MongoClient,
@@ -156,3 +159,4 @@ app.get('/:verify',function(req,res){
   collection.findAndModify({"id":id},[['a',1]],{$set{"verified":1}});
   db.close();
 });
+*/
