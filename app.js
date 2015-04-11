@@ -80,6 +80,7 @@ app.get('/:setActive', function(req,res){
   db.close();
 
 });
+});
 
 
 
