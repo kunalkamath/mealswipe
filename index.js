@@ -4,6 +4,7 @@
 var http = require('http'),
     express = require('express'),
     path = require('path');
+    bson = require('bson');
 
 // set up express 
 var app = express();
@@ -25,9 +26,10 @@ http.createServer(app).listen(app.get('port'), function(){
 MongoClient = require('mongodb').MongoClient,
 Server = require('mongodb').Server,
 CollectionDriver = require('./collectionDriver').CollectionDriver;
-var mc = new MongoClient(new Server(mongoHost, mongoPort)); 
-var mongoHost = 'ec2-54-69-87-192.us-west-2.compute.amazonaws.com'; 
+var mongoHost = 'localhost';
+//var mongoHost = 'ec2-54-69-87-192.us-west-2.compute.amazonaws.com'; 
 var mongoPort = 27017; 
+var mc = new MongoClient(new Server(mongoHost, mongoPort)); 
 var cd;
 
 // start mongo client
@@ -47,8 +49,8 @@ mc.open(function(err, mc) {
 
 // retrieve active users
 app.get('/:active', function(req, res) {
-
-} 
+  console.log("hi");
+}); 
 
 
 app.get('/:collection', function(req, res) { 
