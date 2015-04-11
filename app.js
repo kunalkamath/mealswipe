@@ -59,7 +59,7 @@ app.get('/:active', function(req, res) {
 });
   
 
-app.post(":/register", function(req, resp)){
+app.post(":/register", function(req, resp){
 
     var params = req.params;
   var MongoClient = require('mongodb').MongoClient,
