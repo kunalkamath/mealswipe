@@ -50,8 +50,14 @@ app.get('/:active', function(req, res) {
   var obj = {};
   var i;
   for (i = 0; i < locations.length ; i++){
-    var num = collection.count({active : 1, location : locations[i]});
+
+    collection.count({"active":1,"location":locations[i]}, function(err,count){
+      obj[locations[i]] = count;
+    })
+    /*
+    var num = collection.count({"active" : 1, "location" : locations[i]});
     obj[locations[i]] = num;
+  */
   }
   //Send JSON object back to the user
   res.send(obj);
