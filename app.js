@@ -53,10 +53,6 @@ app.get('/:active', function(req, res) {
     collection.count({"active":1,"location":locations[i]}, function(err,count){
       obj[locations[i]] = count;
     })
-    /*
-    var num = collection.count({"active" : 1, "location" : locations[i]});
-    obj[locations[i]] = num;
-  */
   }
   //Send JSON object back to the user
   res.send(obj);
@@ -65,7 +61,7 @@ app.get('/:active', function(req, res) {
 });
   
 
-app.post(":/register", function(req, resp){
+app.post("/:register", function(req, resp){
 
   var params = req.params;
 
