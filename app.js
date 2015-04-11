@@ -36,8 +36,28 @@ app.get('/', function (req, res) {
 });
 
 app.get('/:active', function(req, res) {
-  res.send('Heorld!');
-  console.log("hi");
+  //Start connection
+  var MongoClient = require('mongodb').MongoClient,
+      format = require('util').format;
+  MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+    if(err) throw err;
+  //Open the proper database
+  //Change this later to adapt to user parameters
+  var collection = db.collection("Columbia");
+  //Assume this is the list of locations in that collection
+  var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
+  //Construct a JSON object to contain the number of people at each location
+  var obj = {};
+  var i;
+  for (i = 0; i < locations.length ; i++){
+    var num = collection.count({active : 1, location : locations[i]});
+    obj[locations[i]] = num;
+  }
+  //Send JSON object back to the user
+  res.send(obj);
+  db.close();
+});
+  
 });
 
 
