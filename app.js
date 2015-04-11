@@ -96,10 +96,7 @@ app.post(":/register", function(req, resp){
 
 
 });
-<<<<<<< HEAD
-=======
 
->>>>>>> cb6e53062a2540733766bcab91d2b570ddfb3568
 /*
 app.get('/:setActive', function(req,res){
   //Start connection
