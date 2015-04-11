@@ -118,9 +118,26 @@ app.get('/:setActive', function(req,res){
   doc["location"] = loc;
   //Nothing to send back to user
   db.close();
-
 });
 });
 
-
+app.get('/:setInactive', function(req,res){
+  //Start connection
+  var MongoClient = require('mongodb').MongoClient,
+      format = require('util').format;
+  MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+    if(err) throw err;
+  //Open the proper database
+  //Change this later to adapt to user parameters
+  var collection = db.collection("Columbia");
+  //Fix everything based on req format
+  //And storing of user id
+  var id = //get user id
+  var doc = collection.find({"id" :id}).limit(1);
+  doc["active"] = 0;
+  doc["location"] = "";
+  //Nothing to send back to user
+  db.close();
+});
+});
 
