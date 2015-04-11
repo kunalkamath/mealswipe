@@ -96,7 +96,7 @@ app.post(":/register", function(req, resp){
 
 
 });
-
+/*
 app.get('/:setActive', function(req,res){
   //Start connection
   var MongoClient = require('mongodb').MongoClient,
@@ -154,6 +154,7 @@ app.get('/:verify',function(req,res){
   db.close();
 });
 
+*/
 
   //test emails sending capabilities
 app.get(":/testing", function(req, resp){
