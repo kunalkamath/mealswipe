@@ -62,8 +62,14 @@ app.get('/:active', function(req, res) {
   
 
 app.post("/:register", function(req, resp){
+  var params;
+  if(req.params == null){
+    params = {
 
-  var params = req.params;
+    } 
+  }
+  else
+    params = req.params;
   console.log("in register");
   MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
     if(err) throw err;
