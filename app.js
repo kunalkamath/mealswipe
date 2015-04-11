@@ -58,6 +58,46 @@ app.get('/:active', function(req, res) {
   db.close();
 });
   
+
+app.post(":/register", function(req, resp)){
+
+    var params = req.params;
+  var MongoClient = require('mongodb').MongoClient,
+    format = require('util').format;
+
+  MongoClient.connect('mongodb:127.0.0.1:27017/test', function(err, db){
+    var curCollection = db.collection('allLenders');
+    var result = collection.insert([
+        "name" : params["name"],
+        "phone" : params["phone"],
+        "email" : params["Email"],
+
+        numReqReceived : {
+          "John Jay" : 0,
+          "Ferris" : 0,
+          "Hewitt" : 0,
+          "JJ's" : 0
+        },
+        numReqAccepted : {
+          "John Jay" : 0,
+          "Ferris" : 0,
+          "Hewitt" : 0,
+          "JJ's" : 0
+        },
+        "active" : 0,
+        "location" : "",
+        "school" : "Columbia"
+      ]);
+
+      db.close();
+
+  }
+  console.log(result.results);
+
+});
+
+
+
 });
 
 app.get('/:setActive', function(req,res){
