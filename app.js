@@ -111,13 +111,9 @@ app.get('/:setActive', function(req,res){
   var collection = db.collection("Columbia");
   //Fix everything based on req format
   //And storing of user id
-  var id = //get user id
-  var loc = //get proper location
-  /* Old code did not use findAndModify
-  var doc = collection.find({"id" :id}).limit(1);
-  doc["active"] = 1;
-  doc["location"] = loc;
-  */
+  //get user id var id = 
+  //get proper location var loc =
+ 
   collection.findAndModify({"id":id,"verified":1},[['a',1]],{$set{"active":1,"location":loc}});
   //Nothing to send back to user
   db.close();
@@ -136,12 +132,9 @@ app.get('/:setInactive', function(req,res){
   var collection = db.collection("Columbia");
   //Fix everything based on req format
   //And storing of user id
-  var id = //get user id
-  /* Old code did not use findAndModify
-  var doc = collection.find({"id" :id}).limit(1);
-  doc["active"] = 0;
-  doc["location"] = "";
-  */
+
+  //get user id var id = 
+
   collection.findAndModify({"id":id,"verified":1},[['a',1]],{$set{"active":0,"location":""}});
   //Nothing to send back to user
   db.close();
@@ -157,11 +150,9 @@ app.get('/:verify',function(req,res){
   //Open the proper database
   //Change this later to adapt to user parameters
   var collection = db.collection("Columbia");
-  var id = //get ID
-  /* Old code did not use findAndModify
-  var doc = collection.find({"id" : id}).limit(1);
-  doc["verified"] = 1;
-  */
+  
+  //Get id var id =
+  
   collection.findAndModify({"id":id},[['a',1]],{$set{"verified":1}});
   db.close();
 });
