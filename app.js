@@ -40,44 +40,38 @@ app.get('/', function (req, res) {
 app.get('/:active', function(req, res) {
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
-  //Open the proper database
-  //Change this later to adapt to user parameters
-  var collection = db.collection("Columbia");
-  //Assume this is the list of locations in that collection
-  var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
-  //Construct a JSON object to contain the number of people at each location
-  var obj = {};
-  var i;
-  for (i = 0; i < locations.length ; i++){
-
-    collection.count({"active":1,"location":locations[i]}, function(err,count){
-      obj[locations[i]] = count;
-    })
-    /*
-    var num = collection.count({"active" : 1, "location" : locations[i]});
-    obj[locations[i]] = num;
-  */
-  }
-  //Send JSON object back to the user
-  res.send(obj);
-  db.close();
-});
+    //Open the proper database
+    //Change this later to adapt to user parameters
+    var collection = db.collection("Columbia");
+    //Assume this is the list of locations in that collection
+    var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
+    //Construct a JSON object to contain the number of people at each location
+    var obj = {};
+    var i;
+    for (i = 0; i < locations.length ; i++){
+      collection.count({"active":1,"location":locations[i]}, function(err,count){
+        obj[locations[i]] = count;
+      })
+    }
+    //Send JSON object back to the user
+    obj["testField"] = "test worked";
+    res.send(obj);
+    db.close();
+  });
 });
   
 
-app.post(":/register", function(req, resp){
+app.post("/:register", function(req, resp){
 
   var params = req.params;
-
-  MongoClient.connect('mongodb:127.0.0.1:27017/test', function(err, db){
+  console.log("in register");
+  MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
     if(err) throw err;
     var curCollection = db.collection('allLenders');
-
-    var result = collection.insert({
+    var result = curCollection.insert({
         "name" : params["name"],
         "phone" : params["phone"],
         "email" : params["Email"],
-
         "numReqReceived" : {
           "John Jay" : 0,
           "Ferris" : 0,
@@ -95,9 +89,8 @@ app.post(":/register", function(req, resp){
         "school" : "Columbia"
       });
       db.close();
-
   });
-
+  console.log("done registering");
 });
 
 /*
