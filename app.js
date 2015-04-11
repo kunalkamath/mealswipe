@@ -96,6 +96,10 @@ app.post(":/register", function(req, resp){
 
 
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> cb6e53062a2540733766bcab91d2b570ddfb3568
 /*
 app.get('/:setActive', function(req,res){
   //Start connection
@@ -116,8 +120,9 @@ app.get('/:setActive', function(req,res){
   db.close();
 });
 });
+*/
 
-
+/*
 app.get('/:setInactive', function(req,res){
   //Start connection
   var MongoClient = require('mongodb').MongoClient,
@@ -136,8 +141,9 @@ app.get('/:setInactive', function(req,res){
   //Nothing to send back to user
   db.close();
 });
-});
+});*/
 
+/*
 app.get('/:verify',function(req,res){
   //Start connection
   var MongoClient = require('mongodb').MongoClient,
@@ -153,43 +159,4 @@ app.get('/:verify',function(req,res){
   collection.findAndModify({"id":id},[['a',1]],{$set{"verified":1}});
   db.close();
 });
-
 */
-
-  //test emails sending capabilities
-app.get(":/testing", function(req, resp){
-  // get user inputted params
-  var params = req.params;
-  // instantiate the nodemailer object
-  var nodemailer = require('nodemailer');
-  
-  // create transport for sending mail
-  var transporter = nodemailer.createTransport("SMTP", {
-
-    service: 'Gmail',
-    auth: {
-      user: 'got0indians@gmail.com',
-      pass: 'speakinguntonationss'
-    }
-  });
-
-  var mailOptions = {
-      from: '<got0indians@gmail.com>',
-      to: '<official.harid@gmail.com>',
-      subject: 'Nooooo',
-      text: 'Hi there',
-    }
-
-    transporter.sendMail(mailOptions, 
-      
-      function(error, info){
-
-        if (error){
-          console.log(error);
-        }else{
-          console.log('Message sent: ' + infor.response);
-        }
-
-    });
-
-  });
