@@ -1,7 +1,9 @@
 // import
 var express = require('express'),
     MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server;
+    Server = require('mongodb').Server,
+    MongoClient = require('mongodb').MongoClient,
+    format = require('util').format;
 
 var app = express();
 var mongoHost = 'localhost';
@@ -36,9 +38,6 @@ app.get('/', function (req, res) {
 });
 
 app.get('/:active', function(req, res) {
-  //Start connection
-  var MongoClient = require('mongodb').MongoClient,
-      format = require('util').format;
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
   //Open the proper database
@@ -68,24 +67,24 @@ app.get('/:active', function(req, res) {
 
 app.post(":/register", function(req, resp){
 
-    var params = req.params;
-  var MongoClient = require('mongodb').MongoClient,
-    format = require('util').format;
+  var params = req.params;
 
   MongoClient.connect('mongodb:127.0.0.1:27017/test', function(err, db){
+    if(err) throw err;
     var curCollection = db.collection('allLenders');
+
     var result = collection.insert({
         "name" : params["name"],
         "phone" : params["phone"],
         "email" : params["Email"],
 
-        numReqReceived : {
+        "numReqReceived" : {
           "John Jay" : 0,
           "Ferris" : 0,
           "Hewitt" : 0,
           "JJ's" : 0
         },
-        numReqAccepted : {
+        "numReqAccepted" : {
           "John Jay" : 0,
           "Ferris" : 0,
           "Hewitt" : 0,
@@ -95,12 +94,9 @@ app.post(":/register", function(req, resp){
         "location" : "",
         "school" : "Columbia"
       });
-
       db.close();
 
   });
-
-
 
 });
 
