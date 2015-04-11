@@ -1,7 +1,9 @@
 // import
 var express = require('express'),
     MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server;
+    Server = require('mongodb').Server,
+    MongoClient = require('mongodb').MongoClient,
+    format = require('util').format;
 
 var app = express();
 var mongoHost = 'localhost';
@@ -36,50 +38,49 @@ app.get('/', function (req, res) {
 });
 
 app.get('/:active', function(req, res) {
-  //Start connection
-  var MongoClient = require('mongodb').MongoClient,
-      format = require('util').format;
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
-  //Open the proper database
-  //Change this later to adapt to user parameters
-  var collection = db.collection("Columbia");
-  //Assume this is the list of locations in that collection
-  var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
-  //Construct a JSON object to contain the number of people at each location
-  var obj = {};
-  var i;
-  for (i = 0; i < locations.length ; i++){
-    var num = collection.count({active : 1, location : locations[i]});
-    obj[locations[i]] = num;
-  }
-  //Send JSON object back to the user
-  res.send(obj);
-  db.close();
-});
+    //Change this later to adapt to user parameters
+    var collection = db.collection('Columbia');
+    //Assume this is the list of locations in that collection
+    var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
+    //Construct a JSON object to contain the number of people at each location
+    var obj = {};
+    var i;
+    for (i = 0; i < locations.length; i++){
+      var num = collection.count({"active" : 1, "location" : locations[i]});
+      console.log(num);
+      obj[locations[i]] = num;
+    }
+    //Send JSON object back to the user
+    res.send(obj);
+    db.close();
+    console.log("in connection");
+    res.send("ok");
+  });
 });
   
 
 app.post(":/register", function(req, resp){
 
-    var params = req.params;
-  var MongoClient = require('mongodb').MongoClient,
-    format = require('util').format;
+  var params = req.params;
 
   MongoClient.connect('mongodb:127.0.0.1:27017/test', function(err, db){
+    if(err) throw err;
     var curCollection = db.collection('allLenders');
+
     var result = collection.insert({
         "name" : params["name"],
         "phone" : params["phone"],
         "email" : params["Email"],
 
-        numReqReceived : {
+        "numReqReceived" : {
           "John Jay" : 0,
           "Ferris" : 0,
           "Hewitt" : 0,
           "JJ's" : 0
         },
-        numReqAccepted : {
+        "numReqAccepted" : {
           "John Jay" : 0,
           "Ferris" : 0,
           "Hewitt" : 0,
@@ -89,12 +90,9 @@ app.post(":/register", function(req, resp){
         "location" : "",
         "school" : "Columbia"
       });
-
       db.close();
 
   });
-
-
 
 });
 
