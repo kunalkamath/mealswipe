@@ -62,52 +62,46 @@ app.get('/:active', function(req, res) {
 
 app.post("/:register", function(req, res){
   var params;
-  if(req.params == null){
-    console.log("done registering");
+  if(req.params){
     params = {
-      "name" : "Hari D",
+      "name" : "Esha Maha",
       "phone" : "12345678",
-      "email" : "abc1234@columbia.edu"
+      "email" : "em2852@columbia.edu"
     } 
   }
   else{
     params = req.params;
   }
-  console.log("in register");
+
   MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
     if(err) throw err;
-    var curCollection = db.collection('allLenders');
-    var result = curCollection.insert({
-        "name" : params["name"],
-        "phone" : params["phone"],
-        "email" : params["Email"],
-        "numReqReceived" : {
-          "John Jay" : 0,
-          "Ferris" : 0,
-          "Hewitt" : 0,
-          "JJ's" : 0
-        },
-        "numReqAccepted" : {
-          "John Jay" : 0,
-          "Ferris" : 0,
-          "Hewitt" : 0,
-          "JJ's" : 0
-        },
-        "active" : 0,
-        "location" : "",
-        "school" : "Columbia"
-      }, function(err, result){
-          console.log(result);
-          console.log(err);
-        /*if (err){
-          console.log('ERROR');
-          console.log(error.message);
-          return;
-        }*/
+    var collection = db.collection("allLenders");
+    collection.insert([{"name" : params["name"],
+      "phone" : params["phone"],
+      "email" : params["email"],
+      "numReqReceived" : {
+        "John Jay" : 0,
+        "Ferris" : 0,
+        "Hewitt" : 0,
+        "JJ's" : 0
+      },
+      "numReqAccepted" : {
+        "John Jay" : 0,
+        "Ferris" : 0,
+        "Hewitt" : 0,
+        "JJ's" : 0
+      },
+      "active" : 0,
+      "location" : "",
+      "school" : "Columbia"
+      }], function(err, result) {
+        collection.findOne({ email : params["email"] }, function(err, item) {
+          console.log(item.email);
+          db.close();
       });
-      db.close();
+    });
+    db.close();
   });
-  res.send("RDTFCGVBHJNK");
   console.log("done registering");
 });
 
