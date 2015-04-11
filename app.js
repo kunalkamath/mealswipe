@@ -67,7 +67,7 @@ app.post(":/register", function(req, resp){
 
   MongoClient.connect('mongodb:127.0.0.1:27017/test', function(err, db){
     var curCollection = db.collection('allLenders');
-    var result = collection.insert([
+    var result = collection.insert({
         "name" : params["name"],
         "phone" : params["phone"],
         "email" : params["Email"],
@@ -87,14 +87,11 @@ app.post(":/register", function(req, resp){
         "active" : 0,
         "location" : "",
         "school" : "Columbia"
-      ]);
+      });
 
       db.close();
 
-  }
-  console.log(result.results);
-
-});
+  });
 
 
 
@@ -165,3 +162,42 @@ app.get('/:verify',function(req,res){
   collection.findAndModify({"id":id},[['a',1]],{$set{"verified":1}});
   db.close();
 });
+
+
+  //test emails sending capabilities
+app.get(":/testing", function(req, resp){
+  // get user inputted params
+  var params = req.params;
+  // instantiate the nodemailer object
+  var nodemailer = require('nodemailer');
+  
+  // create transport for sending mail
+  var transporter = nodemailer.createTransport("SMTP", {
+
+    service: 'Gmail',
+    auth: {
+      user: 'got0indians@gmail.com',
+      pass: 'speakinguntonationss'
+    }
+  });
+
+  var mailOptions = {
+      from: '<got0indians@gmail.com>',
+      to: '<official.harid@gmail.com>',
+      subject: 'Nooooo',
+      text: 'Hi there',
+    }
+
+    transporter.sendMail(mailOptions, 
+      
+      function(error, info){
+
+        if (error){
+          console.log(error);
+        }else{
+          console.log('Message sent: ' + infor.response);
+        }
+
+    });
+
+  });
