@@ -54,7 +54,6 @@ app.get('/:active', function(req, res) {
       })
     }
     //Send JSON object back to the user
-    obj["testField"] = "test worked";
     res.send(obj);
     db.close();
   });
