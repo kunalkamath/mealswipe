@@ -1,7 +1,7 @@
 // import
 var express = require('express'),
     MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server,
+    Server = require('mongodb').Server;
 
 var app = express();
 var mongoHost = 'localhost';
