@@ -3,7 +3,8 @@ var express = require('express'),
     MongoClient = require('mongodb').MongoClient,
     Server = require('mongodb').Server,
     MongoClient = require('mongodb').MongoClient,
-    format = require('util').format;
+    format = require('util').format,
+    nodemailer = require('nodemailer');
 
 var app = express();
 var mongoHost = 'localhost';
@@ -18,18 +19,15 @@ var server = app.listen(3000, function () {
 
 app.get('/', function (req, res) {
 
-  var MongoClient = require('mongodb').MongoClient,
-      format = require('util').format;
-
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
-    var collection = db.collection('test_insert');
-    collection.insert({a:2}, function(err, docs) {
-      collection.count(function(err, count) {
+    var coll = db.collection('test_insert');
+    coll.insert({a:2}, function(err, docs) {
+      coll.count(function(err, count) {
         console.log(format("count = %s", count));
         res.send(format("count = %s", count));
       });
-      collection.find().toArray(function(err, results) {
+      coll.find().toArray(function(err, results) {
         console.dir(results);
         db.close();
       });
@@ -37,45 +35,35 @@ app.get('/', function (req, res) {
   });
 });
 
-app.get('/fruit/:fruitName/:fruitColor/:fruitWeight', function(req, res) {
-    var data = {
-        "fruit": {
-            "name": req.params.fruitName,
-            "color": req.params.fruitColor,
-            "weight" : req.params.fruitWeight
-        }
-    }; 
-    console.log(data);
-    res.send(data["fruit"]["apple"]);
-});
-
 app.get('/active', function(req, res) {
-  console.log(req.params);
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
     //Open the proper database
     //Change this later to adapt to user parameters
-    var collection = db.collection("Columbia");
-    //Assume this is the list of locations in that collection
+    var coll = db.collection("allLenders");
+    //Assume this is the list of locations in that coll
     var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
     //Construct a JSON object to contain the number of people at each location
     var obj = {};
     var i;
+    var done = 0;
     for (i = 0; i < locations.length ; i++){
-      collection.count({"active":1,"location":locations[i]}, function(err,count){
+      coll.count({"active":1,"location":locations[i]}, function(err,count){
         obj[locations[i]] = count;
+        if (i == locations.length - 1) done = 1;
       })
+
     }
     obj["hello"] = "is this working?";
     //Send JSON object back to the user
     res.send(obj);
-    db.close();
+    while(done == 0)
+      db.close();
   });
 });
 
 app.post('/register/:name/:phone/:email', function(req, res){
   var params;
-
 
   if(req.params.name){
     params = req.params;
@@ -87,9 +75,9 @@ app.post('/register/:name/:phone/:email', function(req, res){
 
   MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
     if(err) throw err;
-    var collection = db.collection('allLenders');
+    var coll = db.collection('allLenders');
 
-    collection.insert([{"name" : params["name"],
+    coll.insert([{"name" : params["name"],
       "phone" : params["phone"],
       "email" : params["email"],
       "numReqReceived" : {
@@ -121,10 +109,9 @@ app.post('/register/:name/:phone/:email', function(req, res){
     });
 
     //Send an email to confirm registration
-    var nodemailer = require('nodemailer');
     // Create a SMTP transporter object
     var transporter = nodemailer.createTransport({
-        service: 'Gmail',
+        seirvice: 'Gmail',
         auth: {
             user: 'cumealswipe@gmail.com',
             pass: 'speakinguntonationss'
@@ -168,44 +155,45 @@ app.post('/register/:name/:phone/:email', function(req, res){
     });
 });
 
-/*
-app.get('/:setActive', function(req,res){
-  //Start connection
-  var MongoClient = require('mongodb').MongoClient,
-      format = require('util').format;
+
+app.post('/setActive/:name', function(req,res){
+
+ console.log(req.params); 
+
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
-  //Open the proper database
-  //Change this later to adapt to user parameters
-  var collection = db.collection("Columbia");
-  //Fix everything based on req format
-  //And storing of user id
-  //get user id var id = 
-  //get proper location var loc =
- 
-  collection.findAndModify({"id":id,"verified":1},[['a',1]],{$set{"active":1,"location":loc}});
-  //Nothing to send back to user
-  db.close();
+    console.log(req.params);
+    var coll = db.collection("allLenders");
+
+    coll.update( { "name" : req.params.name }, 
+                 { $set : { "active" : 1 } },
+      function(err, doc) {
+        if (err) { 
+          res.status(500).send("failed in find and modify");
+          console.log(err);
+        }
+        else {
+          res.status(200).send("ok");
+        }
+    });
+  });
+
 });
-});
-*/
 
 /*
 app.get('/:setInactive', function(req,res){
   //Start connection
-  var MongoClient = require('mongodb').MongoClient,
-      format = require('util').format;
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
   //Open the proper database
   //Change this later to adapt to user parameters
-  var collection = db.collection("Columbia");
+  var coll = db.collection("Columbia");
   //Fix everything based on req format
   //And storing of user id
 
   //get user id var id = 
 
-  collection.findAndModify({"id":id,"verified":1},[['a',1]],{$set{"active":0,"location":""}});
+  coll.findAndModify({"id":id,"verified":1},[['a',1]],{$set{"active":0,"location":""}});
   //Nothing to send back to user
   db.close();
 });
@@ -214,7 +202,6 @@ app.get('/:setInactive', function(req,res){
 
 app.get('/verify/:email',function(req,res){
     var params;
-
 
     if(req.params.email){
         params = req.params;
@@ -225,17 +212,15 @@ app.get('/verify/:email',function(req,res){
     }
 
     //Start connection
-    var MongoClient = require('mongodb').MongoClient,
-        format = require('util').format;
     MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
         if(err) throw err;
     //Open the proper database
     //Change this later to adapt to user parameters
-    var collection = db.collection("Columbia");
+    var coll = db.collection("Columbia");
     
     var email = params["email"];
   
-    collection.findAndModify({"email":email},[['a',1]],{$set:{"verified":1}}, function(err, doc) {
+    coll.findAndModify({"email":email},[['a',1]],{$set:{"verified":1}}, function(err, doc) {
         if(err) {
           console.log(err);
           res.send(500, "failed");
@@ -248,5 +233,5 @@ app.get('/verify/:email',function(req,res){
         db.close();
       });
 
+    });
 });
-  });
