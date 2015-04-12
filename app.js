@@ -53,6 +53,7 @@ app.get('/:active', function(req, res) {
         obj[locations[i]] = count;
       })
     }
+    obj["hello"] = "is this working?";
     //Send JSON object back to the user
     res.send(obj);
     db.close();
