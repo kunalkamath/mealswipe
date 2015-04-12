@@ -236,7 +236,7 @@ app.get('/verify/:email',function(req,res){
 });
 
 
-app.get('/accept/:email/:location'), function(req,res){
+app.get('/accept/:email/:location', function(req,res){
     var params;
 
     if(req.params.email){
@@ -251,9 +251,6 @@ app.get('/accept/:email/:location'), function(req,res){
     var location = params["location"];
     var count = 0;
 
-    //Start connection
-    var MongoClient = require('mongodb').MongoClient,
-        format = require('util').format;
     MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
         if(err) throw err;
     //Open the proper database
@@ -274,18 +271,5 @@ app.get('/accept/:email/:location'), function(req,res){
           res.send(200,"ok");
         }
     });
-
-    /*collection.updateOne({"email":email},{$set : {"numReqAccepted".$.location : count} }, function(err, doc) {
-        if(err) {
-          console.log(err);
-          res.send(500, "failed");
-        } else {
-          console.log("here's the doc");
-          console.log(doc);
-          console.log("something happened");
-          res.send(200, "ok");
-        }
-        db.close();
-      });*/
-
+  });
 });
