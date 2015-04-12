@@ -106,6 +106,7 @@ app.post('/register/:name/:phone/:email', function(req, res){
       },
       "active" : 0,
       "location" : "",
+      "verified" : 0,
       "school" : "Columbia"
       }], function(err, result) {
         if(err) {
@@ -117,6 +118,53 @@ app.post('/register/:name/:phone/:email', function(req, res){
         }
         db.close();
       });
+    });
+
+    //Send an email to confirm registration
+    var nodemailer = require('nodemailer');
+    // Create a SMTP transporter object
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'cumealswipe@gmail.com',
+            pass: 'speakinguntonationss'
+        }
+    });
+    //Gather info for email
+    var name = params["name"];
+    var email = params["email"];
+    var usr = name+" <"+email+">";
+    var url = 'localhost:3000/verify/'+params["email"];
+    var partialurl = 'localhost:3000/verify';
+    //Construct email body in HTML format
+    var msg = '<p><strong>Thank you for registering with MealShare!</strong>';
+    msg += '</p><p>To complete your registration click the link below:</p><p>';
+    msg += '<a href="';
+    msg += url;
+    msg += '">';
+    msg += partialurl;
+    msg += '</a></p>';
+    // Message object
+    var message = {
+        // sender info
+        from: 'CUMealSwipe <cumealswipe@gmail.com>',
+        // Recipient
+        to: usr,
+        // Subject of the message
+        subject: 'MealSwiper Registration Confirmation', 
+        // HTML body
+        html: msg,
+    };
+    //Send it
+    transporter.sendMail(message, function(error, info) {
+        if (error) {
+            console.log('Error occurred');
+            console.log(error.message);
+            return;
+        }
+        else{
+          console.log("email sent");
+        }
     });
 });
 
@@ -163,20 +211,42 @@ app.get('/:setInactive', function(req,res){
 });
 });*/
 
-/*
-app.get('/:verify',function(req,res){
-  //Start connection
-  var MongoClient = require('mongodb').MongoClient,
-      format = require('util').format;
-  MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
-    if(err) throw err;
-  //Open the proper database
-  //Change this later to adapt to user parameters
-  var collection = db.collection("Columbia");
+
+app.get('/verify/:email',function(req,res){
+    var params;
+
+
+    if(req.params.email){
+        params = req.params;
+        console.log(params);
+    }
+    else {
+        res.send(404, "must include email");
+    }
+
+    //Start connection
+    var MongoClient = require('mongodb').MongoClient,
+        format = require('util').format;
+    MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+        if(err) throw err;
+    //Open the proper database
+    //Change this later to adapt to user parameters
+    var collection = db.collection("Columbia");
+    
+    var email = params["email"];
   
-  //Get id var id =
-  
-  collection.findAndModify({"id":id},[['a',1]],{$set{"verified":1}});
-  db.close();
+    collection.findAndModify({"email":email},[['a',1]],{$set:{"verified":1}}, function(err, doc) {
+        if(err) {
+          console.log(err);
+          res.send(500, "failed");
+        } else {
+          console.log("here's the doc");
+          console.log(doc);
+          console.log("something happened");
+          res.send(200, "ok");
+        }
+        db.close();
+      });
+
 });
-*/
+  });
