@@ -161,19 +161,6 @@ app.post('/setActive/:name', function(req,res){
 
 });
 
-
-app.get('/:setInactive', function(req,res){
-  //Start connection
-  MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
-    if(err) throw err;
-  //Open the proper database
-  //Change this later to adapt to user parameters
-  var coll = db.collection("Columbia");
-  //Fix everything based on req format
-  //And storing of user id
-  });
-});
-
 app.get('/setInactive/:email', function(req,res){
     var params;
 
@@ -196,7 +183,7 @@ app.get('/setInactive/:email', function(req,res){
     
     var email = params["email"];
 
-    collection.findAndModify({"email":email,"verified":1},[['a',1]],{$set:{"active":0,"location":""}}, function(err, doc){
+    collection.updateOne({"email":email,"verified":1},{$set:{"active":0,"location":""}}, function(err, doc){
         if(err) {
           console.log(err);
           res.send(500, "failed");
@@ -233,7 +220,7 @@ app.get('/verify/:email',function(req,res){
     
     var email = params["email"];
   
-    coll.findAndModify({"email":email},[['a',1]],{$set:{"verified":1}}, function(err, doc) {
+    coll.updateOne({"email":email},{$set:{"verified":1}}, function(err, doc) {
         if(err) {
           console.log(err);
           res.send(500, "failed");
@@ -246,4 +233,59 @@ app.get('/verify/:email',function(req,res){
         db.close();
       });
   });
+});
+
+
+app.get('/accept/:email/:location'), function(req,res){
+    var params;
+
+    if(req.params.email){
+        params = req.params;
+        console.log(params);
+    }
+    else {
+      res.send(404,"must include email");
+    }
+
+    var email = params["email"];
+    var location = params["location"];
+    var count = 0;
+
+    //Start connection
+    var MongoClient = require('mongodb').MongoClient,
+        format = require('util').format;
+    MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+        if(err) throw err;
+    //Open the proper database
+    //Change this later to adapt to user parameters
+    var collection = db.collection("Columbia");
+
+    //Increase the number of lent meals
+    //Find current number
+    collection.find({"email":email}).toArray(function(err, docs){
+        if(err){
+          console.log(err);
+          res.send(500,"failed");
+        }
+        else{
+          count = docs[0]["numReqAccepted"][location];
+          count += 1;
+          console.log(docs[0]);
+          res.send(200,"ok");
+        }
+    });
+
+    /*collection.updateOne({"email":email},{$set : {"numReqAccepted".$.location : count} }, function(err, doc) {
+        if(err) {
+          console.log(err);
+          res.send(500, "failed");
+        } else {
+          console.log("here's the doc");
+          console.log(doc);
+          console.log("something happened");
+          res.send(200, "ok");
+        }
+        db.close();
+      });*/
+
 });
