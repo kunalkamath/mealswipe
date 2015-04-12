@@ -34,7 +34,6 @@ app.get('/active', function(req, res) {
         if (i == locations.length - 1) done = 1;
       })
     }
-    obj["hello"] = "is this working?";
     //Send JSON object back to the user
     res.send(obj);
     while(done == 0);
@@ -236,7 +235,7 @@ app.get('/verify/:email',function(req,res){
 });
 
 
-app.get('/accept/:email/:location'), function(req,res){
+app.get('/accept/:email/:location', function(req,res){
     var params;
 
     if(req.params.email){
@@ -251,9 +250,6 @@ app.get('/accept/:email/:location'), function(req,res){
     var location = params["location"];
     var count = 0;
 
-    //Start connection
-    var MongoClient = require('mongodb').MongoClient,
-        format = require('util').format;
     MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
         if(err) throw err;
     //Open the proper database
@@ -275,7 +271,9 @@ app.get('/accept/:email/:location'), function(req,res){
         }
     });
 
-    /*collection.updateOne({"email":email},{$set : {"numReqAccepted"[location] : count} }, function(err, doc) {
+    var update = {$set : {}};
+    update.$set["numReqAccepted" + location] = count;
+    collection.updateOne({"email":email},update, function(err, doc) {
         if(err) {
           console.log(err);
           res.send(500, "failed");
@@ -286,6 +284,7 @@ app.get('/accept/:email/:location'), function(req,res){
           res.send(200, "ok");
         }
         db.close();
-    });*/
+    });
 
+  });
 });
