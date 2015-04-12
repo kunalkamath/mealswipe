@@ -37,7 +37,20 @@ app.get('/', function (req, res) {
   });
 });
 
-app.get('/:active', function(req, res) {
+app.get('/fruit/:fruitName/:fruitColor/:fruitWeight', function(req, res) {
+    var data = {
+        "fruit": {
+            "name": req.params.fruitName,
+            "color": req.params.fruitColor,
+            "weight" : req.params.fruitWeight
+        }
+    }; 
+    console.log(data);
+    res.send(data["fruit"]["apple"]);
+});
+
+app.get('/active', function(req, res) {
+  console.log(req.params);
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
     //Open the proper database
@@ -59,24 +72,23 @@ app.get('/:active', function(req, res) {
     db.close();
   });
 });
-  
 
-app.post("/:register", function(req, res){
+app.post('/register/:name/:phone/:email', function(req, res){
   var params;
-  if(req.params){
-    params = {
-      "name" : "Esha Maha",
-      "phone" : "12345678",
-      "email" : "em2852@columbia.edu"
-    } 
-  }
-  else{
+
+
+  if(req.params.name){
     params = req.params;
+    console.log(params);
+  }
+  else {
+    res.send(404, "must include name, phone, and email in request");
   }
 
   MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
     if(err) throw err;
-    var collection = db.collection("allLenders");
+    var collection = db.collection('allLenders');
+
     collection.insert([{"name" : params["name"],
       "phone" : params["phone"],
       "email" : params["email"],
@@ -96,14 +108,16 @@ app.post("/:register", function(req, res){
       "location" : "",
       "school" : "Columbia"
       }], function(err, result) {
-        collection.findOne({ email : params["email"] }, function(err, item) {
-          console.log(item.email);
-          db.close();
+        if(err) {
+          console.log(err);
+          res.send(500, "failed");
+        } else {
+          console.log("done registering");
+          res.send(200, "ok");
+        }
+        db.close();
       });
     });
-    db.close();
-  });
-  console.log("done registering");
 });
 
 /*
