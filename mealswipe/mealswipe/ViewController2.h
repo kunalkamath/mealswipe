@@ -10,4 +10,6 @@
 
 @interface ViewController2 : UIViewController
 
+@property (strong, nonatomic) UILabel *scoreLabel;
+
 @end
