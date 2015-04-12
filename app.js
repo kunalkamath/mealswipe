@@ -191,13 +191,43 @@ app.get('/:setInactive', function(req,res){
   //Fix everything based on req format
   //And storing of user id
 
-  //get user id var id = 
+app.get('/setInactive/:email', function(req,res){
+    var params;
 
-  coll.findAndModify({"id":id,"verified":1},[['a',1]],{$set{"active":0,"location":""}});
-  //Nothing to send back to user
-  db.close();
+    if(req.params.email){
+        params = req.params;
+        console.log(params);
+    }
+    else {
+        res.send(404, "must include email");
+    }
+
+    //Start connection
+    var MongoClient = require('mongodb').MongoClient,
+        format = require('util').format;
+    MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+      if(err) throw err;
+    //Open the proper database
+    //Change this later to adapt to user parameters
+    var collection = db.collection("Columbia");
+    
+    var email = params["email"];
+
+    collection.findAndModify({"email":email,"verified":1},[['a',1]],{$set:{"active":0,"location":""}}, function(err, doc){
+        if(err) {
+          console.log(err);
+          res.send(500, "failed");
+        } else {
+          console.log("here's the doc");
+          console.log(doc);
+          console.log("moved to inactive");
+          res.send(200, "ok");
+        }
+        db.close();
+
+    });
+  });
 });
-});*/
 
 
 app.get('/verify/:email',function(req,res){
@@ -232,6 +262,5 @@ app.get('/verify/:email',function(req,res){
         }
         db.close();
       });
-
-    });
+  });
 });
