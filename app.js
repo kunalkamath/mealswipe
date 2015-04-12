@@ -80,10 +80,10 @@ app.post('/register/:name/:phone/:email', function(req, res){
       }], function(err, result) {
         if(err) {
           console.log(err);
-          res.send(500, "failed");
+          res.status(500).send("failed");
         } else {
           console.log("done registering");
-          res.send(200, "ok");
+          res.status(200).send("ok");
         }
         db.close();
       });
