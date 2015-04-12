@@ -56,6 +56,83 @@ int FLAG = 0;
     
     NSLog(@"x: %f", [x floatValue]);
     NSLog(@"y: %f", [y floatValue]);
+
+    int lat_coord = -120; //dummy var
+    int long_coord = -36; //dummy var
+
+
+    if ( -3 <= long_coord - [x intValue] && long_coord - [x intValue] <= 3){
+        if ( -3 <= lat_coord - [y intValue] && lat_coord - [y intValue] <= 3){
+            NSLog(@"Within zone");
+            
+            NSMutableString *urls = [[NSMutableString alloc]init];
+            [urls appendString:@"http://localhost:3000/setActive/:"];
+            [urls appendString:@"email"];
+
+            NSURL* url = [NSURL URLWithString:urls];
+            NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+            request.HTTPMethod = @"POST";
+            
+            NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] init];
+            NSData* data = [NSJSONSerialization dataWithJSONObject: mutableDictionary options:0 error:NULL];
+            request.HTTPBody = data;
+    
+            [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+            NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
+            NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    
+            NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+            if (!error) {
+                NSLog(@"Set active user");
+            }
+            else {
+                NSLog(@"error in nsurl sending");
+                NSLog(@"%@",[error localizedDescription]);
+            }
+
+            }];
+        }
+    }
+
+    if ( -3 >(long_coord - [x intValue]) || long_coord - [x intValue] > 3 ||
+         -3 >(lat_coord  - [y intValue])  || lat_coord  - [y intValue] > 3){
+
+        NSLog(@"Outside zone");
+        
+        NSMutableString *urls = [[NSMutableString alloc]init];
+        [urls appendString:@"http://localhost:3000/setInactive/:"];
+        [urls appendString:@"email"];
+
+        NSURL* url = [NSURL URLWithString:urls];
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+        request.HTTPMethod = @"POST";
+    
+        NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] init];
+        NSData* data = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:0 error:NULL];
+        request.HTTPBody = data;
+    
+        [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+        NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        NSURLSession* session = [NSURLSession sessionWithConfiguration:config];
+    
+        NSURLSessionDataTask* dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+        if (!error) {
+            NSLog(@"Set inactive user");
+        }
+        else {
+            NSLog(@"error in nsurl sending");
+            NSLog(@"%@",[error localizedDescription]);
+        }
+
+    }];
+    }
+
+
+
 }
 
 
@@ -82,6 +159,7 @@ int FLAG = 0;
     NSURL* url = [NSURL URLWithString:urls];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";
+    
     
     NSData* data = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:0 error:NULL];
     request.HTTPBody = data;
