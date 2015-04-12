@@ -7,14 +7,22 @@
 //
 
 #import "ViewController2.h"
+//#import "ViewController.h"
+//#import "MapViewController.h"
+#import <Foundation/NSJSONSerialization.h>
+#import <CoreLocation/CoreLocation.h>
 
-@interface ViewController2 ()
+@interface ViewController2 () <CLLocationManagerDelegate>
+
+@property (assign, nonatomic) CLLocation *loc;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 
 @end
 
 @implementation ViewController2
 
 - (void)viewDidLoad {
+
     [super viewDidLoad];
     
     _scoreLabel = [ [UILabel alloc ] initWithFrame:CGRectMake((self.view.bounds.size.width / 2), 0.0, 150.0, 43.0) ];
