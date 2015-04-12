@@ -7,15 +7,81 @@
 //
 
 #import "ViewController2.h"
+//#import "ViewController.h"
+//#import "MapViewController.h"
+#import <Foundation/NSJSONSerialization.h>
+#import <CoreLocation/CoreLocation.h>
 
-@interface ViewController2 ()
+@interface ViewController2 () <CLLocationManagerDelegate>
+
+@property (assign, nonatomic) CLLocation *loc;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 
 @end
 
 @implementation ViewController2
 
+
+int FLAG = 0;
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    _loc =[locations lastObject];
+    // NSLog(@" NAGU %@", [locations lastObject]);
+    
+    float xcoord =_loc.coordinate.latitude;
+    float ycoord = _loc.coordinate.longitude;
+    NSNumber *x = [NSNumber numberWithFloat:xcoord];
+    NSNumber *y = [NSNumber numberWithFloat:ycoord];
+    
+    NSMutableArray *point =[[NSMutableArray alloc] init];
+    [point addObject:x];
+    [point addObject:y];
+    
+    NSLog(@"x: %f\n", [x floatValue]);
+    NSLog(@"y: %f\n", [y floatValue]);
+    
+}
+
+
+- (BOOL) locationServicesAvailable{
+    if ([CLLocationManager locationServicesEnabled] == NO) {
+        return NO;
+    } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        return NO;
+    } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+        return NO;
+    }
+    return YES;
+}
+
+
+
+
+
 - (void)viewDidLoad {
+
     [super viewDidLoad];
+    NSLog(@"I SAID HOT DAMN");
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        
+        if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied){
+            NSLog(@"fuck you");
+        }
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        self.locationManager.desiredAccuracy=kCLLocationAccuracyBest;
+        self.locationManager.distanceFilter=kCLDistanceFilterNone;
+        [self.locationManager requestAlwaysAuthorization];
+        [self.locationManager startMonitoringSignificantLocationChanges];
+        [self.locationManager startUpdatingLocation];
+        NSLog(@"Location services are enabled");
+    } else {
+        NSLog(@"Location services are not enabled");
+    }
+    
+       NSLog(@"YEEEEE");
     
     _scoreLabel = [ [UILabel alloc ] initWithFrame:CGRectMake((self.view.bounds.size.width / 2), 0.0, 150.0, 43.0) ];
     _scoreLabel.textColor = [UIColor whiteColor];
