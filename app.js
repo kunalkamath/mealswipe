@@ -275,7 +275,7 @@ app.get('/accept/:email/:location'), function(req,res){
         }
     });
 
-    /*collection.updateOne({"email":email},{$set : {"numReqAccepted".$.location : count} }, function(err, doc) {
+    /*collection.updateOne({"email":email},{$set : {"numReqAccepted"[location] : count} }, function(err, doc) {
         if(err) {
           console.log(err);
           res.send(500, "failed");
@@ -286,6 +286,6 @@ app.get('/accept/:email/:location'), function(req,res){
           res.send(200, "ok");
         }
         db.close();
-      });*/
+    });*/
 
 });
