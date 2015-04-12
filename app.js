@@ -171,6 +171,8 @@ app.get('/:setInactive', function(req,res){
   var coll = db.collection("Columbia");
   //Fix everything based on req format
   //And storing of user id
+  });
+});
 
 app.get('/setInactive/:email', function(req,res){
     var params;
