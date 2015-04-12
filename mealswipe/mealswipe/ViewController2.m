@@ -62,26 +62,6 @@ int FLAG = 0;
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    NSLog(@"I SAID HOT DAMN");
-    
-    if ([CLLocationManager locationServicesEnabled]) {
-        
-        if([CLLocationManager authorizationStatus]==kCLAuthorizationStatusDenied){
-            NSLog(@"fuck you");
-        }
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.delegate = self;
-        self.locationManager.desiredAccuracy=kCLLocationAccuracyBest;
-        self.locationManager.distanceFilter=kCLDistanceFilterNone;
-        [self.locationManager requestAlwaysAuthorization];
-        [self.locationManager startMonitoringSignificantLocationChanges];
-        [self.locationManager startUpdatingLocation];
-        NSLog(@"Location services are enabled");
-    } else {
-        NSLog(@"Location services are not enabled");
-    }
-    
-       NSLog(@"YEEEEE");
     
     _scoreLabel = [ [UILabel alloc ] initWithFrame:CGRectMake((self.view.bounds.size.width / 2), 0.0, 150.0, 43.0) ];
     _scoreLabel.textColor = [UIColor whiteColor];
