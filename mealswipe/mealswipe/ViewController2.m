@@ -21,44 +21,6 @@
 
 @implementation ViewController2
 
-
-int FLAG = 0;
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    _loc =[locations lastObject];
-    // NSLog(@" NAGU %@", [locations lastObject]);
-    
-    float xcoord =_loc.coordinate.latitude;
-    float ycoord = _loc.coordinate.longitude;
-    NSNumber *x = [NSNumber numberWithFloat:xcoord];
-    NSNumber *y = [NSNumber numberWithFloat:ycoord];
-    
-    NSMutableArray *point =[[NSMutableArray alloc] init];
-    [point addObject:x];
-    [point addObject:y];
-    
-    NSLog(@"x: %f\n", [x floatValue]);
-    NSLog(@"y: %f\n", [y floatValue]);
-    
-}
-
-
-- (BOOL) locationServicesAvailable{
-    if ([CLLocationManager locationServicesEnabled] == NO) {
-        return NO;
-    } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        return NO;
-    } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
-        return NO;
-    }
-    return YES;
-}
-
-
-
-
-
 - (void)viewDidLoad {
 
     [super viewDidLoad];

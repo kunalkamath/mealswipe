@@ -42,6 +42,8 @@
     }
 }
 
+int FLAG = 0;
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     _loc =[locations lastObject];
@@ -55,7 +57,6 @@
     NSLog(@"x: %f", [x floatValue]);
     NSLog(@"y: %f", [y floatValue]);
 }
-
 
 
 - (void)viewWillAppear:(BOOL)animated {
