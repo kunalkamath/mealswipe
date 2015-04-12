@@ -58,7 +58,7 @@ int FLAG = 0;
     NSLog(@"y: %f", [y floatValue]);
 
     int lat_coord = -120; //dummy var
-    int long_coord = -36; //dummy var
+    int long_coord = 36; //dummy var
     NSString *email = emailText.text;
 
 

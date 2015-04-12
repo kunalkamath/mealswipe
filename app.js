@@ -118,8 +118,6 @@ app.post('/register/:name/:phone/:email', function(req, res){
     '</ul>'
     ].join('');
 
-
-
     // Message object
     var message = {
         // sender info
@@ -145,7 +143,7 @@ app.post('/register/:name/:phone/:email', function(req, res){
 });
 
 
-app.post('/setActive/:name', function(req,res){
+app.post('/setActive/:email', function(req,res){
 
   console.log(req.params); 
 
@@ -156,7 +154,7 @@ app.post('/setActive/:name', function(req,res){
     console.log(req.params);
     var coll = db.collection("allLenders");
 
-    coll.update( { "name" : req.params.name }, 
+    coll.update( { "email" : req.params.email }, 
                  { $set : { "active" : 1 } },
       function(err, doc) {
         if (err) { 
@@ -166,12 +164,14 @@ app.post('/setActive/:name', function(req,res){
         else {
           res.status(200).send("ok");
         }
-    });
+    db.close();
+      });
+
   });
 
 });
 
-app.get('/setInactive/:email', function(req,res){
+app.post('/setInactive/:email', function(req,res){
     var params;
 
     console.log("Outside zone");
@@ -201,7 +201,7 @@ app.get('/setInactive/:email', function(req,res){
           res.status(500).send("failed");
         } else {
           console.log("here's the doc");
-          console.log(doc);
+          //console.log(doc);
           console.log("moved to inactive");
           res.status(200).send("ok");
         }
