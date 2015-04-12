@@ -147,8 +147,10 @@ app.post('/register/:name/:phone/:email', function(req, res){
 
 app.post('/setActive/:name', function(req,res){
 
- console.log(req.params); 
+  console.log(req.params); 
 
+  console.log("Inside zone");
+  
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
     console.log(req.params);
@@ -171,6 +173,8 @@ app.post('/setActive/:name', function(req,res){
 
 app.get('/setInactive/:email', function(req,res){
     var params;
+
+    console.log("Outside zone");
 
     if(req.params.email){
         params = req.params;

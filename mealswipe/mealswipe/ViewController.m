@@ -59,6 +59,7 @@ int FLAG = 0;
 
     int lat_coord = -120; //dummy var
     int long_coord = -36; //dummy var
+    NSString *email = emailText.text;
 
 
     if ( -3 <= long_coord - [x intValue] && long_coord - [x intValue] <= 3){
@@ -67,7 +68,7 @@ int FLAG = 0;
             
             NSMutableString *urls = [[NSMutableString alloc]init];
             [urls appendString:@"http://localhost:3000/setActive/:"];
-            [urls appendString:@"email"];
+            [urls appendString:email];
 
             NSURL* url = [NSURL URLWithString:urls];
             NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
@@ -93,6 +94,7 @@ int FLAG = 0;
             }
 
             }];
+                [dataTask resume];
         }
     }
 
@@ -103,7 +105,7 @@ int FLAG = 0;
         
         NSMutableString *urls = [[NSMutableString alloc]init];
         [urls appendString:@"http://localhost:3000/setInactive/:"];
-        [urls appendString:@"email"];
+        [urls appendString:email];
 
         NSURL* url = [NSURL URLWithString:urls];
         NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
@@ -112,7 +114,7 @@ int FLAG = 0;
         NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] init];
         NSData* data = [NSJSONSerialization dataWithJSONObject:mutableDictionary options:0 error:NULL];
         request.HTTPBody = data;
-    
+        //NSLog(url);
         [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
         NSURLSessionConfiguration* config = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -129,9 +131,8 @@ int FLAG = 0;
         }
 
     }];
+     [dataTask resume];
     }
-
-
 
 }
 
