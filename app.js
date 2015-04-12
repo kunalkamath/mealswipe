@@ -17,29 +17,10 @@ var server = app.listen(3000, function () {
   console.log('Express server listening on port: %s', host, port);
 });
 
-app.get('/', function (req, res) {
-
-  MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
-    if(err) throw err;
-    var coll = db.collection('test_insert');
-    coll.insert({a:2}, function(err, docs) {
-      coll.count(function(err, count) {
-        console.log(format("count = %s", count));
-        res.send(format("count = %s", count));
-      });
-      coll.find().toArray(function(err, results) {
-        console.dir(results);
-        db.close();
-      });
-    });
-  });
-});
-
 app.get('/active', function(req, res) {
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
     if(err) throw err;
-    //Open the proper database
-    //Change this later to adapt to user parameters
+    // TODO: Change this later to adapt to user parameters
     var coll = db.collection("allLenders");
     //Assume this is the list of locations in that coll
     var locations = ["John Jay","JJ's Place","Ferris Booth","Hewitt"];
@@ -52,12 +33,11 @@ app.get('/active', function(req, res) {
         obj[locations[i]] = count;
         if (i == locations.length - 1) done = 1;
       })
-
     }
     obj["hello"] = "is this working?";
     //Send JSON object back to the user
     res.send(obj);
-    while(done == 0)
+    while(done == 0);
       db.close();
   });
 });
@@ -71,6 +51,7 @@ app.post('/register/:name/:phone/:email', function(req, res){
   }
   else {
     res.send(404, "must include name, phone, and email in request");
+    return;
   }
 
   MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err, db){
@@ -180,7 +161,7 @@ app.post('/setActive/:name', function(req,res){
 
 });
 
-/*
+
 app.get('/:setInactive', function(req,res){
   //Start connection
   MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
