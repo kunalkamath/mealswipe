@@ -35,7 +35,7 @@ app.get('/active', function(req, res) {
       })
     }
     //Send JSON object back to the user
-    res.send(obj);
+    res.status(200).send(obj);
     while(done == 0);
       db.close();
   });
@@ -49,7 +49,7 @@ app.post('/register/:name/:phone/:email', function(req, res){
     console.log(params);
   }
   else {
-    res.send(404, "must include name, phone, and email in request");
+    res.status(404).send("must include name, phone, and email in request");
     return;
   }
 
@@ -79,10 +79,10 @@ app.post('/register/:name/:phone/:email', function(req, res){
       }], function(err, result) {
         if(err) {
           console.log(err);
-          res.send(500, "failed");
+          res.status(500).send("failed");
         } else {
           console.log("done registering");
-          res.send(200, "ok");
+          res.status(200).send("ok");
         }
         db.close();
       });
@@ -91,7 +91,7 @@ app.post('/register/:name/:phone/:email', function(req, res){
     //Send an email to confirm registration
     // Create a SMTP transporter object
     var transporter = nodemailer.createTransport({
-        seirvice: 'Gmail',
+        service: 'Gmail',
         auth: {
             user: 'cumealswipe@gmail.com',
             pass: 'speakinguntonationss'
@@ -104,13 +104,22 @@ app.post('/register/:name/:phone/:email', function(req, res){
     var url = 'localhost:3000/verify/'+params["email"];
     var partialurl = 'localhost:3000/verify';
     //Construct email body in HTML format
-    var msg = '<p><strong>Thank you for registering with MealShare!</strong>';
-    msg += '</p><p>To complete your registration click the link below:</p><p>';
-    msg += '<a href="';
-    msg += url;
-    msg += '">';
-    msg += partialurl;
-    msg += '</a></p>';
+    var msg = [
+    '<h1>Thank you for registering with Mealswype!</h1>',
+    '<hr />',
+    '<p>We hope to help you find and share meal swipes on campus.</p>',
+    '<p>To proceed with your registration, please follow the link below:</p>',
+    '<p><a href="localhost:3000/verify/IanC">localhost:3000/verify</a></p>',
+    '<p>How to use the app once you&#39;re signed up:</p>',
+    '<ul>',
+    ' <li>Request</li>',
+    ' <li>Swipe</li>',
+    ' <li>Enjoy</li>',
+    '</ul>'
+    ].join('');
+
+
+
     // Message object
     var message = {
         // sender info
@@ -168,7 +177,7 @@ app.get('/setInactive/:email', function(req,res){
         console.log(params);
     }
     else {
-        res.send(404, "must include email");
+        res.status(404).send("must include email");
     }
 
     //Start connection
@@ -185,12 +194,12 @@ app.get('/setInactive/:email', function(req,res){
     collection.updateOne({"email":email,"verified":1},{$set:{"active":0,"location":""}}, function(err, doc){
         if(err) {
           console.log(err);
-          res.send(500, "failed");
+          res.status(500).send("failed");
         } else {
           console.log("here's the doc");
           console.log(doc);
           console.log("moved to inactive");
-          res.send(200, "ok");
+          res.status(200).send("ok");
         }
         db.close();
 
@@ -207,7 +216,7 @@ app.get('/verify/:email',function(req,res){
         console.log(params);
     }
     else {
-        res.send(404, "must include email");
+        res.status(404).send("must include email");
     }
 
     //Start connection
@@ -222,12 +231,12 @@ app.get('/verify/:email',function(req,res){
     coll.updateOne({"email":email},{$set:{"verified":1}}, function(err, doc) {
         if(err) {
           console.log(err);
-          res.send(500, "failed");
+          res.status(500).send("failed");
         } else {
           console.log("here's the doc");
           console.log(doc);
           console.log("something happened");
-          res.send(200, "ok");
+          res.status(200).send("ok");
         }
         db.close();
       });
@@ -243,7 +252,7 @@ app.get('/accept/:email/:location', function(req,res){
         console.log(params);
     }
     else {
-      res.send(404,"must include email");
+      res.status(404).send("must include email");
     }
 
     var email = params["email"];
@@ -261,13 +270,13 @@ app.get('/accept/:email/:location', function(req,res){
     collection.find({"email":email}).toArray(function(err, docs){
         if(err){
           console.log(err);
-          res.send(500,"failed");
+          res.status(500).send("failed");
         }
         else{
           count = docs[0]["numReqAccepted"][location];
           count += 1;
           console.log(docs[0]);
-          res.send(200,"ok");
+          res.status(200).send("ok");
         }
     });
 
@@ -276,15 +285,43 @@ app.get('/accept/:email/:location', function(req,res){
     collection.updateOne({"email":email},update, function(err, doc) {
         if(err) {
           console.log(err);
-          res.send(500, "failed");
+          res.status(500).send("failed");
         } else {
           console.log("here's the doc");
           console.log(doc);
           console.log("something happened");
-          res.send(200, "ok");
+          res.status(200).send("ok");
         }
         db.close();
     });
-
   });
+});
+
+app.get('/request/:email/:location',function(req,res){
+    var params;
+
+    if(req.params.email){
+        params = req.params;
+        console.log(params);
+    }
+    else {
+      res.status(404).send("must include email");
+    }
+
+    var email = params["email"];
+    var location = params["location"];
+    var count = 0;
+
+    MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+        if(err) throw err;
+    //Open the proper database
+    //Change this later to adapt to user parameters
+    var collection = db.collection("Columbia");
+
+    //Find active users in the right area, send notification
+    collection.find({"active":1,"location":location}).toArray(function(err,docs){
+
+        //Do something with this list
+    });
+    });
 });
